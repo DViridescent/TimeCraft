@@ -54,8 +54,8 @@ namespace Recorder.Services
         {
             // 首先找到在那个时刻之前开始的最后一个项目
             var firstBlock = await _dbContext.TimeBlocks
-                .Where(i => i.StartTime < startTime)
                 .OrderByDescending(i => i.Id)
+                .Where(i => i.StartTime < startTime)
                 .FirstOrDefaultAsync();
 
             if (firstBlock is null && _dbContext.TimeBlocks.Any())
@@ -68,6 +68,18 @@ namespace Recorder.Services
 
             if (firstBlock != null)
             {
+                if (firstBlock.EndTime < startTime)
+                {
+                    // 如果找到的项目的结束时间比startTime早，那么这个项目不是我们要找的
+                    // 我们需要找到这个项目之后的项目
+                    firstBlock = await _dbContext.FindAsync<TimeBlock>(firstBlock.Id + 1);
+                    // 如果那之后就无了，说明那就是最后一个了，那就返回0
+                    if (firstBlock is null)
+                    {
+                        return TimeSpan.Zero;
+                    }
+                }
+
                 // 然后查询从这个项目到最后的所有项目
                 var itemsFromPivotalToEnd = await _dbContext.TimeBlocks
                     .Where(i => i.Id >= firstBlock.Id)
@@ -126,10 +138,9 @@ namespace Recorder.Services
             var currentActivityPath = _currentActivity?.Path ?? Activity.Alive.Path; // 如果为空那就只知道活着了
 
             var lastBlock = await _dbContext.TimeBlocks
-                       .OrderByDescending(d => d.Id)
-                       .Take(1)
-                       .FirstOrDefaultAsync();
-
+                .OrderByDescending(d => d.Id)
+                .Take(1)
+                .FirstOrDefaultAsync();
 
             bool needNewBlock = false;
             if (lastBlock is null)
