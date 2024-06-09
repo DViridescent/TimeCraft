@@ -2,149 +2,107 @@
     x:Class="WPF.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:custom="clr-namespace:CustomControls;assembly=CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Title="MainWindow"
-    Margin="10"
     AllowsTransparency="True"
     Background="Transparent"
-    MouseDown="Window_MouseDown"
+    ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Window.DataContext>
-        <local:MainWindowViewModel />
-    </Window.DataContext>
-    <Window.Resources>
-        <Storyboard x:Key="EnterSelected">
-            <ColorAnimation
-                Storyboard.TargetProperty="Background.Color"
-                From="#aaaaaa"
-                To="CadetBlue"
-                Duration="0:0:0.2" />
-        </Storyboard>
+    <Border
+        Padding="5"
+        Background="White"
+        BorderBrush="#222222"
+        BorderThickness="2"
+        CornerRadius="15">
 
-        <Storyboard x:Key="ExitSelected">
-            <ColorAnimation
-                Storyboard.TargetProperty="Background.Color"
-                From="CadetBlue"
-                To="White"
-                Duration="0:0:0.2" />
-        </Storyboard>
-    </Window.Resources>
+        <Grid x:Name="MainGrid" ClipToBounds="True">
+            <Grid.Resources>
+                <system:Double x:Key="SwitchOffset">170</system:Double>
+                <system:Double x:Key="SwitchOffsetInverse">-170</system:Double>
+            </Grid.Resources>
+            <StackPanel x:Name="FrontPanel">
+                <StackPanel.RenderTransform>
+                    <TranslateTransform Y="0" />
+                </StackPanel.RenderTransform>
 
-    <Border CornerRadius="15">
-        <Grid>
-            <ListBox
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                ItemsSource="{Binding Blocks}"
-                SelectedItem="{Binding CurrentBlock, Delay=1000}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=Items.Count}" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.Template>
-                    <ControlTemplate>
-                        <Border
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="#222222"
-                            BorderThickness="2"
-                            CornerRadius="15">
-                            <ItemsPresenter Margin="10" />
-                        </Border>
-                    </ControlTemplate>
-                </ListBox.Template>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Margin" Value="5" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border
-                                        Margin="{TemplateBinding Margin}"
-                                        Padding="5"
-                                        Background="{TemplateBinding Background}"
-                                        CornerRadius="10">
-                                        <ContentPresenter Width="50" Height="50" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <!--<Setter Property="Background" Value="Green" />-->
-                        <Style.Triggers>
-                            <!--  当 ListBoxItem 被选中时改变背景色和前景色  -->
-                            <Trigger Property="IsSelected" Value="True">
-                                <!--<Setter Property="Background" Value="{StaticResource AnimatedBrush}" />-->
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource EnterSelected}" />
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource ExitSelected}" />
-                                </Trigger.ExitActions>
-                            </Trigger>
+                <custom:Blocker ItemsSource="{Binding Blocks}" SelectedItem="{Binding CurrentBlock}" />
 
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ThicknessAnimation
-                                                Storyboard.TargetProperty="Margin"
-                                                From="5"
-                                                To="2"
-                                                Duration="0:0:0.2" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ThicknessAnimation
-                                                Storyboard.TargetProperty="Margin"
-                                                From="2"
-                                                To="5"
-                                                Duration="0:0:0.2" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
-                                <Setter Property="Margin" Value="2" />
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="False" />
-                                    <Condition Property="IsMouseOver" Value="True" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" Value="#aaaaaa" />
-                            </MultiTrigger>
-                        </Style.Triggers>
+                <Button Click="ToBackPanel" Style="{StaticResource NavigateButton}">
+                    <iconPacks:Lucide Kind="ChevronDown" />
+                </Button>
+            </StackPanel>
+            <Grid x:Name="BackPanel">
+                <Grid.RenderTransform>
+                    <TranslateTransform />
+                </Grid.RenderTransform>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
-                            <iconPacks:PackIconLucide
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="{Binding Kind}" />
-                            <TextBlock
-                                Grid.Row="1"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Text="{Binding Name}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                <Button Click="ToFrontPanel" Style="{StaticResource NavigateButton}">
+                    <iconPacks:Lucide Kind="ChevronUp" />
+                </Button>
+                <StackPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Command="{Binding OutputCommand}"
+                        Content="{iconPacks:Lucide Kind=ReceiptText}"
+                        Style="{StaticResource StandardButton}" />
+                    <Button
+                        Click="MinimizeWindow"
+                        Content="{iconPacks:Lucide Kind=Minimize}"
+                        Style="{StaticResource StandardButton}" />
+                    <Button
+                        Command="{Binding CloseCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                        Content="{iconPacks:Lucide Kind=Power}"
+                        Style="{StaticResource StandardButton}" />
+                </StackPanel>
+            </Grid>
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="ShowFrontPanel">
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetName="FrontPanel"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                To="0"
+                                Duration="0:0:0.3" />
+                            <DoubleAnimation
+                                x:Name="BackPanelLeaveAnimation"
+                                Storyboard.TargetName="BackPanel"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                Duration="0:0:0.3" />
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="ShowBackPanel">
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetName="BackPanel"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                To="0"
+                                Duration="0:0:0.3" />
+                            <DoubleAnimation
+                                x:Name="FrontPanelLeaveAnimation"
+                                Storyboard.TargetName="FrontPanel"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                Duration="0:0:0.3" />
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
         </Grid>
     </Border>
-
 </Window>

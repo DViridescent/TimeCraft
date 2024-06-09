@@ -3,7 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "WPF\WPF.csproj", "{9DFB7238-7B5B-453A-B720-46D97FD66A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF", "WPF\WPF.csproj", "{9DFB7238-7B5B-453A-B720-46D97FD66A0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7BC882B5-B054-4269-A7F9-17EC38C8E4D6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recorder", "Recorder\Recorder.csproj", "{BD37CB91-0C5A-40F8-9D78-79D0853971E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Objects", "Objects\Objects.csproj", "{78330CDD-8B93-4216-A00B-B80E0019D8CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControls", "CustomControls\CustomControls.csproj", "{28364446-3382-4570-B26F-FBC365C3EF26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +26,18 @@ Global
 		{9DFB7238-7B5B-453A-B720-46D97FD66A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DFB7238-7B5B-453A-B720-46D97FD66A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DFB7238-7B5B-453A-B720-46D97FD66A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD37CB91-0C5A-40F8-9D78-79D0853971E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD37CB91-0C5A-40F8-9D78-79D0853971E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD37CB91-0C5A-40F8-9D78-79D0853971E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD37CB91-0C5A-40F8-9D78-79D0853971E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78330CDD-8B93-4216-A00B-B80E0019D8CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78330CDD-8B93-4216-A00B-B80E0019D8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78330CDD-8B93-4216-A00B-B80E0019D8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78330CDD-8B93-4216-A00B-B80E0019D8CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28364446-3382-4570-B26F-FBC365C3EF26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28364446-3382-4570-B26F-FBC365C3EF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28364446-3382-4570-B26F-FBC365C3EF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28364446-3382-4570-B26F-FBC365C3EF26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
