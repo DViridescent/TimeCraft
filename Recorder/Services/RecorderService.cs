@@ -20,7 +20,18 @@ namespace Recorder.Services
             Activity.Eating,
             Activity.Slacking
         ];
-        private static string DbPath { get; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\TimeManager\\TimeManager.db";
+        private static string DbPath
+        {
+            get
+            {
+                var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TimeManager");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                };
+                return Path.Combine(folderPath, "TimeManager.db");
+            }
+        }
 
         private readonly DataContext _dbContext;
         private Timer _timer = null!;
