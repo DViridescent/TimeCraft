@@ -12,6 +12,7 @@
     AllowsTransparency="True"
     Background="Transparent"
     ResizeMode="CanMinimize"
+    ShowInTaskbar="False"
     SizeToContent="WidthAndHeight"
     Topmost="True"
     WindowStyle="None"
