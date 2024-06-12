@@ -36,15 +36,15 @@ public partial class App : Application
         }
         notifyIcon.DoubleClick += (sender, args) =>
         {
-            this.MainWindow.Show();
-            this.MainWindow.WindowState = WindowState.Normal;
+            MainWindow.Show();
+            MainWindow.WindowState = WindowState.Normal;
             notifyIcon.Visible = false;
         };
         MainWindow = ServiceProvider.GetRequiredService<MainWindow>();
         MainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
         MainWindow.Show();
         // 处理主窗口最小化逻辑
-        this.MainWindow.StateChanged += MainWindow_StateChanged;
+        MainWindow.StateChanged += MainWindow_StateChanged;
     }
 
     private static void ConfigureServices(IServiceCollection services)
@@ -57,9 +57,9 @@ public partial class App : Application
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
     {
-        if (this.MainWindow.WindowState == WindowState.Minimized)
+        if (MainWindow.WindowState == WindowState.Minimized)
         {
-            this.MainWindow.Hide();
+            MainWindow.Hide();
             notifyIcon.Visible = true;
         }
     }

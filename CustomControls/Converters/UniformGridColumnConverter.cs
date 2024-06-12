@@ -11,7 +11,9 @@ class UniformGridColumnConverter : IValueConverter
         {
             return (int)value switch
             {
-                5 or 6 or 9 => 3,
+                1 => 1,
+                2 => 2,
+                3 or 5 or 6 or 9 => 3,
                 <= 4 or 7 or 8 or _ => 4,
             };
         }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CustomControls;
+using MahApps.Metro.IconPacks;
 using Objects;
 using System.Windows.Threading;
 using WPF.Helpers;
@@ -14,10 +15,10 @@ namespace WPF
 
         public IActivity Activity { get; }
 
-        public BlockViewModel(string name, IActivity activity, TimeSpan startTime)
+        public BlockViewModel(IActivity activity, TimeSpan startTime)
         {
             Activity = activity;
-            _name = name;
+            _name = activity.Name;
             _kind = IconHelper.GetIconKind(activity);
             _timer = new()
             {
@@ -48,7 +49,7 @@ namespace WPF
         private string _name;
 
         [ObservableProperty]
-        private Enum _kind;
+        private PackIconLucideKind _kind;
 
         private void Tick(object? sender, EventArgs e)
         {

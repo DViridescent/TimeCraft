@@ -1,20 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CustomControls;
-using MahApps.Metro.IconPacks;
 using Objects;
 using Recorder;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using WPF.Helpers;
 using WPF.Interfaces;
 
 namespace WPF;
@@ -36,7 +26,7 @@ internal partial class MainWindowViewModel : ObservableObject
         foreach (var activity in activities)
         {
             var startTime = await _recorder.GetTotalTime(activity, DateTime.Today);
-            Blocks.Add(new BlockViewModel(activity.Name, activity, startTime));
+            Blocks.Add(new BlockViewModel(activity, startTime));
         }
     }
 
@@ -91,7 +81,7 @@ internal partial class MainWindowViewModel : ObservableObject
             sb.AppendLine($"- {block.Name}: {block.Duration.Hours}小时{minutes}分钟");
         }
         File.WriteAllText(path, sb.ToString());
-        Process.Start("explorer.exe", folderPath);
+        System.Diagnostics.Process.Start("explorer.exe", folderPath);
     }
 
     [RelayCommand]

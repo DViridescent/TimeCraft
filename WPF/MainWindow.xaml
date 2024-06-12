@@ -8,7 +8,6 @@
     xmlns:local="clr-namespace:WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Title="MainWindow"
     AllowsTransparency="True"
     Background="Transparent"
     ResizeMode="CanMinimize"
@@ -17,7 +16,8 @@
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Border
+
+    <custom:AnimatedBorder
         Padding="5"
         Background="White"
         BorderBrush="#222222"
@@ -105,5 +105,5 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
         </Grid>
-    </Border>
+    </custom:AnimatedBorder>
 </Window>
