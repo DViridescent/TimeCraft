@@ -4,13 +4,13 @@
     xmlns:converters="clr-namespace:CustomControls.Converters"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:CustomControls">
+    <ResourceDictionary.MergedDictionaries>
+        <!--  引用共享资源字典  -->
+        <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/CommonResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <converters:UniformGridColumnConverter x:Key="UniformGridColumnConverter" />
     <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
-
-    <Color x:Key="PrimaryColor">#5F9EA0</Color>
-    <Color x:Key="HoverColor">#aaaaaa</Color>
-    <SolidColorBrush x:Key="PrimaryColorBrush" Color="{StaticResource PrimaryColor}" />
-    <SolidColorBrush x:Key="HoverColorBrush" Color="{StaticResource HoverColor}" />
 
     <Storyboard x:Key="EnterSelected">
         <ColorAnimation
@@ -185,4 +185,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!--  AnimatedBorder  -->
+
 </ResourceDictionary>
