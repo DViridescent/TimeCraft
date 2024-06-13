@@ -17,14 +17,16 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
-    <custom:AnimatedBorder
+    <Border
         Padding="5"
         Background="White"
         BorderBrush="#222222"
         BorderThickness="2"
         CornerRadius="15">
-
-        <Grid x:Name="MainGrid" ClipToBounds="True">
+        <Grid
+            x:Name="MainGrid"
+            custom:Animation.SizeChanged="True"
+            ClipToBounds="True">
             <Grid.Resources>
                 <system:Double x:Key="SwitchOffset">170</system:Double>
                 <system:Double x:Key="SwitchOffsetInverse">-170</system:Double>
@@ -105,5 +107,5 @@
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
         </Grid>
-    </custom:AnimatedBorder>
+    </Border>
 </Window>
