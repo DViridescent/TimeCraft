@@ -1,17 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
 using WPF.Interfaces;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Point = System.Windows.Point;
 using Window = System.Windows.Window;
 
 namespace WPF
 {
-    public partial class MainWindow : Window, ICloseable
+    public partial class MainWindow : Window, ICloseable, IContentHolder
     {
         private const int SnapDistance = 40; // 吸附距离
         private Point initialMousePosition;
@@ -39,20 +35,19 @@ namespace WPF
                 this.ReleaseMouseCapture(); // 停止捕获鼠标
             };
 
-            // 这样可以让代码一定在Loaded完全结束后执行
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                ((TranslateTransform)BackPanel.RenderTransform).Y = MainGrid.ActualHeight;
-            }), DispatcherPriority.Loaded);
-
             // 从最小化恢复时，显示前面板
-            this.StateChanged += (s, e) =>
-            {
-                if (WindowState == WindowState.Normal)
-                {
-                    ToFrontPanel(this, new RoutedEventArgs());
-                }
-            };
+            //this.StateChanged += (s, e) =>
+            //{
+            //    if (WindowState == WindowState.Normal)
+            //    {
+            //        ToFrontPanel(this, new RoutedEventArgs());
+            //    }
+            //};
+        }
+
+        public FrameworkElement ChangeableContent
+        {
+            set => _mainControl.Content = value;
         }
 
         private void MouseMoveCallback(object sender, System.Windows.Input.MouseEventArgs e)
@@ -94,21 +89,7 @@ namespace WPF
             this.Top = windowY;
         }
 
-        private void ToBackPanel(object sender, RoutedEventArgs e)
-        {
-            FrontPanelLeaveAnimation.To = -MainGrid.ActualHeight;
-
-            VisualStateManager.GoToElementState(MainGrid, "ShowBackPanel", true);
-        }
-
-        private void ToFrontPanel(object sender, RoutedEventArgs e)
-        {
-            BackPanelLeaveAnimation.To = MainGrid.ActualHeight;
-
-            VisualStateManager.GoToElementState(MainGrid, "ShowFrontPanel", true);
-        }
-
-        private void MinimizeWindow(object sender, RoutedEventArgs e)
+        public void Minimize()
         {
             WindowState = WindowState.Minimized;
         }

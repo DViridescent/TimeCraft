@@ -5,9 +5,9 @@ using Objects;
 using System.Windows.Threading;
 using WPF.Helpers;
 
-namespace WPF
+namespace WPF.ViewModels
 {
-    public partial class BlockViewModel : ObservableObject, IDisposable, IBlockViewModel
+    public partial class BlockViewModel : ObservableObject, IDisposable
     {
         private readonly DispatcherTimer _timer;
         private DateTime _lastStartTime;

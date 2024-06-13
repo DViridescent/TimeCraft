@@ -1,31 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Objects;
 using Recorder;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using WPF.Interfaces;
 
-namespace WPF;
+namespace WPF.ViewModels;
 
-internal partial class MainWindowViewModel : ObservableObject
+internal partial class HomePageViewModel : ViewModelBase
 {
-    private readonly IRecorder _recorder;
+    private IRecorder Recorder => _serviceProvider.GetRequiredService<IRecorder>();
 
-    public MainWindowViewModel(IRecorder recorder)
+    public HomePageViewModel(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        _recorder = recorder;
-
         Blocks = [];
-        InitializeBlocks(recorder.Activities);
+        InitializeBlocks(Recorder.Activities);
     }
 
     private async void InitializeBlocks(IReadOnlyList<IActivity> activities)
     {
         foreach (var activity in activities)
         {
-            var startTime = await _recorder.GetTotalTime(activity, DateTime.Today);
+            var startTime = await Recorder.GetTotalTime(activity, DateTime.Today);
             Blocks.Add(new BlockViewModel(activity, startTime));
         }
     }
@@ -34,12 +34,25 @@ internal partial class MainWindowViewModel : ObservableObject
     private BlockViewModel? _currentBlock;
     partial void OnCurrentBlockChanged(BlockViewModel? oldValue, BlockViewModel? newValue)
     {
-        _recorder.StartActivity(newValue?.Activity);
+        Recorder.StartActivity(newValue?.Activity);
         oldValue?.Stop();
         newValue?.Start();
     }
 
     public ObservableCollection<BlockViewModel> Blocks { get; private set; }
+
+    [RelayCommand]
+    public void ShowDetail(BlockViewModel blockViewModel)
+    {
+        if (blockViewModel != CurrentBlock)
+        {
+            CurrentBlock = blockViewModel;
+            return;
+        }
+
+        Navigater.Navigate<DetailPageViewModel>();
+        Debug.Print("!");
+    }
 
     [RelayCommand]
     private void Output()
@@ -88,6 +101,12 @@ internal partial class MainWindowViewModel : ObservableObject
     private void Close(ICloseable closable)
     {
         closable.Close();
+    }
+
+    [RelayCommand]
+    private void Minimize(ICloseable closable)
+    {
+        closable.Minimize();
     }
 
     [ObservableProperty]

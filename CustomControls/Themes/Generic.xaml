@@ -10,7 +10,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <converters:UniformGridColumnConverter x:Key="UniformGridColumnConverter" />
-    <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter" />
 
     <Storyboard x:Key="EnterSelected">
         <ColorAnimation
@@ -58,134 +57,98 @@
             Duration="0:0:0.2" />
     </Storyboard>
 
-    <Storyboard x:Key="BlockEnterMouseOver">
-        <DoubleAnimation
-            Storyboard.TargetName="DetailArea"
-            Storyboard.TargetProperty="Height"
-            From="0"
-            To="30"
-            Duration="0:0:0.2" />
-        <DoubleAnimation
-            Storyboard.TargetName="Icon"
-            Storyboard.TargetProperty="Width"
-            From="20"
-            To="16"
-            Duration="0:0:0.2" />
-    </Storyboard>
 
-    <Storyboard x:Key="BlockExitMouseOver">
-        <DoubleAnimation
-            Storyboard.TargetName="DetailArea"
-            Storyboard.TargetProperty="Height"
-            From="30"
-            To="0"
-            Duration="0:0:0.2" />
-        <DoubleAnimation
-            Storyboard.TargetName="Icon"
-            Storyboard.TargetProperty="Width"
-            From="16"
-            To="20"
-            Duration="0:0:0.2" />
-    </Storyboard>
 
-    <DataTemplate x:Key="BlockTemplate">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <iconPacks:PackIconLucide
-                x:Name="Icon"
-                Width="20"
-                Height="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Kind="{Binding Kind}" />
-            <StackPanel
-                x:Name="DetailArea"
-                Grid.Row="1"
-                Height="0">
-                <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
-                <TextBlock HorizontalAlignment="Center" Text="{Binding Duration, Converter={StaticResource TimeSpanToStringConverter}}" />
-            </StackPanel>
-        </Grid>
-        <DataTemplate.Triggers>
-            <!--  使用DataTrigger结合IsSelected属性  -->
-            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard Storyboard="{StaticResource BlockEnterMouseOver}" />
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard Storyboard="{StaticResource BlockExitMouseOver}" />
-                </DataTrigger.ExitActions>
-            </DataTrigger>
-        </DataTemplate.Triggers>
-    </DataTemplate>
-
-    <Style x:Key="BlockerItem" TargetType="{x:Type ListBoxItem}">
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Width="60" Height="60">
-                        <Border
-                            x:Name="ItemBorder"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="10">
-                            <ContentPresenter Margin="3" />
-                        </Border>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource EnterSelected}" />
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource ExitSelected}" />
-                            </Trigger.ExitActions>
-                        </Trigger>
-
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource ItemEnterMouseOver}" />
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource ItemExitMouseOver}" />
-                            </Trigger.ExitActions>
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="False" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="{StaticResource HoverColorBrush}" />
-                        </MultiTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="{x:Type local:Blocker}">
-        <Setter Property="ItemTemplate" Value="{StaticResource BlockTemplate}" />
-        <Setter Property="ItemContainerStyle" Value="{StaticResource BlockerItem}" />
+    <Style TargetType="{x:Type local:SelectableItemsControl}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Blocker}">
+                <ControlTemplate TargetType="{x:Type ItemsControl}">
                     <ItemsPresenter />
+                    <ControlTemplate.Resources>
+                        <Style TargetType="Button">
+                            <!--  设置背景和边框为透明  -->
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <!--  重写模板  -->
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <!--  确保鼠标悬停和按下时不会改变视觉效果  -->
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Margin" Value="2" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Grid Width="60" Height="60">
+                                            <Border
+                                                x:Name="ItemBorder"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="10">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard Storyboard="{StaticResource EnterSelected}" />
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard Storyboard="{StaticResource ExitSelected}" />
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard Storyboard="{StaticResource ItemEnterMouseOver}" />
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard Storyboard="{StaticResource ItemExitMouseOver}" />
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False" />
+                                                    <Condition Property="IsMouseOver" Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" Value="{StaticResource HoverColorBrush}" />
+                                            </MultiTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ControlTemplate.Resources>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Blocker}}, Path=Items.Count, Converter={StaticResource UniformGridColumnConverter}}" />
+                    <UniformGrid Columns="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=Items.Count, Converter={StaticResource UniformGridColumnConverter}}" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!--  AnimatedBorder  -->
 
 </ResourceDictionary>

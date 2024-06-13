@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows;
 using System.Diagnostics;
 using System.Windows.Media.Animation;
+using System.Windows.Controls;
 
 namespace CustomControls;
 public static class Animation
@@ -39,6 +40,7 @@ public static class Animation
 
     private static void Element_LayoutUpdatedOnce(object? sender, EventArgs e)
     {
+        // BUG
         if (sender is not FrameworkElement element)
             return;
 

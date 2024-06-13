@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="clr-namespace:CustomControls;assembly=CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     AllowsTransparency="True"
     Background="Transparent"
     ResizeMode="CanMinimize"
@@ -19,93 +17,11 @@
 
     <Border
         Padding="5"
+        custom:Animation.SizeChanged="True"
         Background="White"
         BorderBrush="#222222"
         BorderThickness="2"
         CornerRadius="15">
-        <Grid
-            x:Name="MainGrid"
-            custom:Animation.SizeChanged="True"
-            ClipToBounds="True">
-            <Grid.Resources>
-                <system:Double x:Key="SwitchOffset">170</system:Double>
-                <system:Double x:Key="SwitchOffsetInverse">-170</system:Double>
-            </Grid.Resources>
-            <StackPanel x:Name="FrontPanel">
-                <StackPanel.RenderTransform>
-                    <TranslateTransform Y="0" />
-                </StackPanel.RenderTransform>
-
-                <custom:Blocker ItemsSource="{Binding Blocks}" SelectedItem="{Binding CurrentBlock}" />
-
-                <Button Click="ToBackPanel" Style="{StaticResource NavigateButton}">
-                    <iconPacks:Lucide Kind="ChevronDown" />
-                </Button>
-            </StackPanel>
-            <Grid x:Name="BackPanel">
-                <Grid.RenderTransform>
-                    <TranslateTransform />
-                </Grid.RenderTransform>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Button Click="ToFrontPanel" Style="{StaticResource NavigateButton}">
-                    <iconPacks:Lucide Kind="ChevronUp" />
-                </Button>
-                <StackPanel
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Button
-                        Command="{Binding OutputCommand}"
-                        Content="{iconPacks:Lucide Kind=ReceiptText}"
-                        Style="{StaticResource StandardButton}" />
-                    <Button
-                        Click="MinimizeWindow"
-                        Content="{iconPacks:Lucide Kind=Minimize}"
-                        Style="{StaticResource StandardButton}" />
-                    <Button
-                        Command="{Binding CloseCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                        Content="{iconPacks:Lucide Kind=Power}"
-                        Style="{StaticResource StandardButton}" />
-                </StackPanel>
-            </Grid>
-
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup>
-                    <VisualState x:Name="ShowFrontPanel">
-                        <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetName="FrontPanel"
-                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                To="0"
-                                Duration="0:0:0.3" />
-                            <DoubleAnimation
-                                x:Name="BackPanelLeaveAnimation"
-                                Storyboard.TargetName="BackPanel"
-                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                Duration="0:0:0.3" />
-                        </Storyboard>
-                    </VisualState>
-                    <VisualState x:Name="ShowBackPanel">
-                        <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetName="BackPanel"
-                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                To="0"
-                                Duration="0:0:0.3" />
-                            <DoubleAnimation
-                                x:Name="FrontPanelLeaveAnimation"
-                                Storyboard.TargetName="FrontPanel"
-                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                Duration="0:0:0.3" />
-                        </Storyboard>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-        </Grid>
+        <ContentControl x:Name="_mainControl" />
     </Border>
 </Window>

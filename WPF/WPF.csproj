@@ -27,4 +27,10 @@
 		<Resource Include="Assets\favicon.ico" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Using Include="System.Windows.Controls.UserControl">
+	    <Alias>UserControl </Alias>
+	  </Using>
+	</ItemGroup>
+
 </Project>

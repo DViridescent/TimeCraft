@@ -3,4 +3,5 @@
 interface ICloseable
 {
     void Close();
+    void Minimize();
 }

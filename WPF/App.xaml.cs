@@ -3,6 +3,10 @@ using Recorder;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using WPF.Interfaces;
+using WPF.Services;
+using WPF.ViewModels;
+using WPF.Views;
 using Application = System.Windows.Application;
 
 namespace WPF;
@@ -41,7 +45,9 @@ public partial class App : Application
             notifyIcon.Visible = false;
         };
         MainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-        MainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
+
+        // MainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
+        ServiceProvider.GetRequiredService<Navigater>().Navigate<HomePageViewModel>();
         MainWindow.Show();
         // 处理主窗口最小化逻辑
         MainWindow.StateChanged += MainWindow_StateChanged;
@@ -51,8 +57,16 @@ public partial class App : Application
     {
         // 使用扩展方法注册你的服务
         services.AddRecorderService()
+            .AddSingleton<ViewProvider>()
+            .AddSingleton<Navigater>()
             .AddSingleton<MainWindow>()
-            .AddSingleton<MainWindowViewModel>();
+            .AddSingleton<IContentHolder>(sp => sp.GetRequiredService<MainWindow>())
+
+            .AddSingleton<HomePageViewModel>()
+            .AddSingleton<DetailPageViewModel>()
+            .AddSingleton<HomePage>()
+            .AddSingleton<DetailPage>();
+        ;
     }
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
