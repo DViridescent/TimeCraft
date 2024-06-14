@@ -14,9 +14,9 @@
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
-
     <Border
         Padding="5"
+        custom:Animation.AncestorWindowAttached="True"
         custom:Animation.SizeChanged="True"
         Background="White"
         BorderBrush="#222222"

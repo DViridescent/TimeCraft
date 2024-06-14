@@ -36,7 +36,7 @@ namespace WPF
                 this.ReleaseMouseCapture(); // 停止捕获鼠标
             };
 
-            SizeChanged += Window_SizeChanged;
+            //SizeChanged += Window_SizeChanged;
 
             // 从最小化恢复时，显示前面板
             //this.StateChanged += (s, e) =>
@@ -71,6 +71,7 @@ namespace WPF
             Screen screen = Screen.FromPoint(new System.Drawing.Point((int)currentMousePosition.X, (int)currentMousePosition.Y));
             Rect workArea = new(screen.WorkingArea.X, screen.WorkingArea.Y, screen.WorkingArea.Width, screen.WorkingArea.Height);
 
+
             if (windowX < workArea.Left + SnapDistance)
             {
                 windowX = workArea.Left;
@@ -90,30 +91,6 @@ namespace WPF
 
             this.Left = windowX;
             this.Top = windowY;
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // 使用WindowInteropHelper来获取当前窗口的句柄
-            var windowInteropHelper = new WindowInteropHelper(this);
-            var currentScreen = Screen.FromHandle(windowInteropHelper.Handle);
-
-            // BUG 还是有问题，好几个。
-
-            // 获取当前屏幕的工作区域
-            var workingArea = currentScreen.WorkingArea;
-
-            // 如果窗口的右侧超出了屏幕的右侧
-            if (Left + ActualWidth > workingArea.Right)
-            {
-                Left = workingArea.Right - ActualWidth; // 向左移动窗口
-            }
-
-            // 如果窗口的底部超出了屏幕的底部
-            if (Top + ActualHeight > workingArea.Bottom)
-            {
-                Top = workingArea.Bottom - ActualHeight; // 向上移动窗口
-            }
         }
 
         public void Minimize()
