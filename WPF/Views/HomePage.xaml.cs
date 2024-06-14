@@ -26,7 +26,7 @@ public partial class HomePage : UserControl
         VisualStateManager.GoToElementState(MainGrid, "ShowBackPanel", true);
     }
 
-    private void ToFrontPanel(object sender, RoutedEventArgs e)
+    internal void ToFrontPanel(object sender, RoutedEventArgs e)
     {
         BackPanelLeaveAnimation.To = MainGrid.ActualHeight;
 

@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using WPF.Interfaces;
+using WPF.Views;
 using Point = System.Windows.Point;
 using Window = System.Windows.Window;
 
@@ -36,16 +38,16 @@ namespace WPF
                 this.ReleaseMouseCapture(); // 停止捕获鼠标
             };
 
-            //SizeChanged += Window_SizeChanged;
-
             // 从最小化恢复时，显示前面板
-            //this.StateChanged += (s, e) =>
-            //{
-            //    if (WindowState == WindowState.Normal)
-            //    {
-            //        ToFrontPanel(this, new RoutedEventArgs());
-            //    }
-            //};
+            // TODO: 优化
+            this.StateChanged += (s, e) =>
+            {
+                if (WindowState == WindowState.Normal)
+                {
+                    var homePage = App.ServiceProvider.GetRequiredService<HomePage>();
+                    homePage.ToFrontPanel(this, new RoutedEventArgs());
+                }
+            };
         }
 
         public FrameworkElement ChangeableContent
