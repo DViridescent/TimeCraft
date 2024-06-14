@@ -17,6 +17,7 @@
     <Border
         Padding="5"
         custom:Animation.AncestorWindowAttached="True"
+        custom:Animation.Duration="0.15"
         custom:Animation.SizeChanged="True"
         Background="White"
         BorderBrush="#222222"

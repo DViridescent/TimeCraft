@@ -15,6 +15,12 @@ public static class Animation
         typeof(Animation),
         new PropertyMetadata(false, OnSizeChangedChanged));
 
+    public static readonly DependencyProperty DurationProperty = DependencyProperty.RegisterAttached(
+        "Duration",
+        typeof(double),
+        typeof(Animation),
+        new PropertyMetadata(0.15, OnSizeChangedChanged));
+
     /// <summary>
     /// 祖先窗口贴靠屏幕边缘，动画同步
     /// </summary>
@@ -28,6 +34,8 @@ public static class Animation
     public static bool GetSizeChanged(DependencyObject element) => (bool)element.GetValue(SizeChangedProperty);
     public static void SetAncestorWindowAttached(DependencyObject element, bool value) => element.SetValue(AncestorWindowAttachedProperty, value);
     public static bool GetAncestorWindowAttached(DependencyObject element) => (bool)element.GetValue(AncestorWindowAttachedProperty);
+    public static void SetDuration(DependencyObject element, double value) => element.SetValue(DurationProperty, value);
+    public static double GetDuration(DependencyObject element) => (double)element.GetValue(DurationProperty);
 
     private static void OnSizeChangedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -97,20 +105,28 @@ public static class Animation
         }
     }
 
-    private static DoubleAnimation DoubleAnimation => new()
+    private static DoubleAnimation GetDoubleAnimation(FrameworkElement element, double? from, double to)
     {
-        Duration = TimeSpan.FromSeconds(0.5),
-        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut },
-        FillBehavior = FillBehavior.Stop,
-    };
+        var animation = new DoubleAnimation
+        {
+            To = to,
+            Duration = TimeSpan.FromSeconds(GetDuration(element)),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut },
+            FillBehavior = FillBehavior.Stop,
+        };
+        if (from.HasValue)
+        {
+            animation.From = from;
+        }
+        return animation;
+    }
 
     private static void UpdateWidthSizeChangeAnimation(FrameworkElement frameworkElement, double previousWidth, double newWidth)
     {
         var scaleTransform = ((ScaleTransform)frameworkElement.LayoutTransform);
         // 缩放比例，使新的宽度缩放后等于老的宽度
         scaleTransform.ScaleX = previousWidth / newWidth;
-        var animation = DoubleAnimation;
-        animation.To = 1;
+        var animation = GetDoubleAnimation(frameworkElement, null, 1);
         animation.Completed += (sender, e) =>
         {
             scaleTransform.ScaleX = 1;
@@ -125,7 +141,7 @@ public static class Animation
         if (_elementHasAttachedWindow.Contains(frameworkElement))
         {
             var window = Window.GetWindow(frameworkElement);
-            AddWindowSynchronizedHorizontalAnimation(window, newWidth - previousWidth, storyboard);
+            AddWindowSynchronizedHorizontalAnimation(frameworkElement, newWidth - previousWidth, storyboard);
             storyboard.Begin();
         }
         else
@@ -138,7 +154,7 @@ public static class Animation
         var scaleTransform = ((ScaleTransform)frameworkElement.LayoutTransform);
         // 缩放比例，使新的高度缩放后等于老的高度
         scaleTransform.ScaleY = previousHeight / newHeight;
-        var animation = DoubleAnimation;
+        var animation = GetDoubleAnimation(frameworkElement, null, 1);
         animation.To = 1;
         animation.Completed += (sender, e) =>
         {
@@ -152,8 +168,7 @@ public static class Animation
 
         if (_elementHasAttachedWindow.Contains(frameworkElement))
         {
-            var window = Window.GetWindow(frameworkElement);
-            AddWindowSynchronizedVerticalAnimation(window, newHeight - previousHeight, storyboard);
+            AddWindowSynchronizedVerticalAnimation(frameworkElement, newHeight - previousHeight, storyboard);
             storyboard.Begin();
         }
         else
@@ -166,8 +181,10 @@ public static class Animation
     /// 给父窗口播放一段同步动画，保证继续贴右边
     /// </summary>
     /// <exception cref="NotImplementedException"></exception>
-    private static void AddWindowSynchronizedHorizontalAnimation(Window window, double deltaWidth, Storyboard storyboard)
+    private static void AddWindowSynchronizedHorizontalAnimation(FrameworkElement frameworkElement, double deltaWidth, Storyboard storyboard)
     {
+        var window = Window.GetWindow(frameworkElement);
+
         // 找到窗口所在的屏幕
         var screen = Screen.FromHandle(new WindowInteropHelper(window).Handle);
 
@@ -182,9 +199,7 @@ public static class Animation
         var newLeft = window.Left - deltaWidth;
 
         // 创建动画
-        var animation = DoubleAnimation;
-        animation.From = window.Left;
-        animation.To = newLeft;
+        var animation = GetDoubleAnimation(frameworkElement, window.Left, newLeft);
         animation.Completed += (sender, e) =>
         {
             // 动画完成后，设置窗口的位置
@@ -198,8 +213,10 @@ public static class Animation
     /// <summary>
     /// 给父窗口播放一段同步动画，保证继续贴下边
     /// </summary>
-    private static void AddWindowSynchronizedVerticalAnimation(Window window, double deltaHeight, Storyboard storyboard)
+    private static void AddWindowSynchronizedVerticalAnimation(FrameworkElement frameworkElement, double deltaHeight, Storyboard storyboard)
     {
+        var window = Window.GetWindow(frameworkElement);
+
         // 找到窗口所在的屏幕
         var screen = Screen.FromHandle(new WindowInteropHelper(window).Handle);
 
@@ -214,9 +231,7 @@ public static class Animation
         var newTop = window.Top - deltaHeight;
 
         // 创建动画
-        var animation = DoubleAnimation;
-        animation.From = window.Top;
-        animation.To = newTop;
+        var animation = GetDoubleAnimation(frameworkElement, window.Top, newTop);
         animation.Completed += (sender, e) =>
         {
             // 动画完成后，设置窗口的位置
