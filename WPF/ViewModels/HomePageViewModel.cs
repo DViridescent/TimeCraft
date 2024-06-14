@@ -51,7 +51,6 @@ internal partial class HomePageViewModel : ViewModelBase
         }
 
         Navigater.Navigate<DetailPageViewModel>();
-        Debug.Print("!");
     }
 
     [RelayCommand]

@@ -21,6 +21,7 @@ public static class Animation
     public static void SetSizeChanged(DependencyObject element, bool value) => element.SetValue(SizeChangedProperty, value);
     public static bool GetSizeChanged(DependencyObject element) => (bool)element.GetValue(SizeChangedProperty);
 
+    private static Dictionary<FrameworkElement, EventHandler> _handlerDict = new Dictionary<FrameworkElement, EventHandler>();
     private static void OnSizeChangedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is not FrameworkElement element)
@@ -28,34 +29,33 @@ public static class Animation
 
         if ((bool)e.NewValue)
         {
+            var handler = new EventHandler((sender, e) => Element_LayoutUpdatedOnce(element));
+            _handlerDict[element] = handler;
             element.LayoutTransform = new ScaleTransform(1, 1);
-            element.LayoutUpdated += Element_LayoutUpdatedOnce;
+            element.LayoutUpdated += handler;
         }
         else
         {
-            element.LayoutUpdated -= Element_LayoutUpdatedOnce;
-            element.SizeChanged -= Element_SizeChanged;
+            if (_handlerDict.TryGetValue(element, out var handler))
+            {
+                element.LayoutUpdated -= handler;
+                _handlerDict.Remove(element);
+
+                element.SizeChanged -= Element_SizeChanged;
+            }
         }
     }
 
-    private static void Element_LayoutUpdatedOnce(object? sender, EventArgs e)
+    private static void Element_LayoutUpdatedOnce(FrameworkElement element)
     {
-        // BUG
-        if (sender is not FrameworkElement element)
-            return;
-
         // 在首次布局更新后移除LayoutUpdated事件处理器，以避免重复执行此逻辑
-        element.LayoutUpdated -= Element_LayoutUpdatedOnce;
+        if (_handlerDict.TryGetValue(element, out var handler))
+        {
+            element.LayoutUpdated -= handler;
+            _handlerDict.Remove(element);
+        }
         // 确保控件的尺寸不是0，然后注册SizeChanged事件
         element.SizeChanged += Element_SizeChanged;
-    }
-
-    private static void Element_Loaded(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement element)
-        {
-            element.SizeChanged += Element_SizeChanged;
-        }
     }
 
     private static void Element_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -83,7 +83,6 @@ public static class Animation
 
     private static void UpdateWidthSizeChangeAnimation(FrameworkElement frameworkElement, double previousWidth, double newWidth)
     {
-        Debug.Print($"previousWidth: {previousWidth}, newWidth: {newWidth}");
         var scaleTransform = ((ScaleTransform)frameworkElement.LayoutTransform);
         // 缩放比例，使新的宽度缩放后等于老的宽度
         scaleTransform.ScaleX = previousWidth / newWidth;
