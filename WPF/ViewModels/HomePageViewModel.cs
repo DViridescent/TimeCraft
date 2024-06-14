@@ -93,7 +93,7 @@ internal partial class HomePageViewModel : ViewModelBase
             sb.AppendLine($"- {block.Name}: {block.Duration.Hours}小时{minutes}分钟");
         }
         File.WriteAllText(path, sb.ToString());
-        System.Diagnostics.Process.Start("explorer.exe", folderPath);
+        Process.Start("explorer.exe", folderPath);
     }
 
     [RelayCommand]

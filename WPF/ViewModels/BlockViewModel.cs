@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CustomControls;
 using MahApps.Metro.IconPacks;
 using Objects;
 using System.Windows.Threading;

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -7,7 +6,7 @@ namespace WPF.Views;
 /// <summary>
 /// HomePage.xaml 的交互逻辑
 /// </summary>
-public partial class HomePage : System.Windows.Controls.UserControl
+public partial class HomePage : UserControl
 {
     public HomePage()
     {

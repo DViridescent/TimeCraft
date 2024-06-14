@@ -7,6 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid Width="400" Height="600">
-        <Button Command="{Binding BackCommand}">返回</Button>
+        <Button Padding="20,5" Command="{Binding BackCommand}">返回</Button>
     </Grid>
 </UserControl>
